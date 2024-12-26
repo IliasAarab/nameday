@@ -23,6 +23,7 @@ const translations = [
   { language: 'Vietnamese', translation: 'Maria' },
 ];
 
+
 const App = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [windowSize, setWindowSize] = useState({
