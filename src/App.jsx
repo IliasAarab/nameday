@@ -49,7 +49,7 @@ const App = () => {
     // Hide the initial confetti after 3 seconds
     const confettiTimer = setTimeout(() => {
       setShowInitialConfetti(false);
-    }, 3000);
+    }, 10000);
 
     return () => clearTimeout(confettiTimer);
   }, []);
