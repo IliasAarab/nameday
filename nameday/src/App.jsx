@@ -1,6 +1,7 @@
+import React, { useState, useEffect, useCallback } from 'react';
 import Confetti from 'react-confetti';
+import ConfettiExplosion from 'react-confetti-explosion';
 import { motion } from 'framer-motion';
-import React, { useState, useEffect } from 'react';
 import './App.css';
 
 const translations = [
@@ -16,7 +17,6 @@ const translations = [
   { language: 'Russian', translation: 'Мария' },
   { language: 'Hindi', translation: 'मारिया' },
   { language: 'Korean', translation: '마리아' },
-  { language: 'Hebrew', translation: 'מריה' },
   { language: 'Bengali', translation: 'মারিয়া' },
   { language: 'Persian', translation: 'ماریا' },
   { language: 'Thai', translation: 'มาเรีย' },
@@ -24,45 +24,70 @@ const translations = [
 ];
 
 const App = () => {
-  const [index, setIndex] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [windowSize, setWindowSize] = useState({
     width: window.innerWidth,
     height: window.innerHeight,
   });
+  const [isExploding, setIsExploding] = useState(false);
+  const [showInitialConfetti, setShowInitialConfetti] = useState(true);
 
   useEffect(() => {
-    function handleResize() {
+    const handleResize = () => {
       setWindowSize({
         width: window.innerWidth,
         height: window.innerHeight,
       });
-    }
+    };
 
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const nextTranslation = () => {
-    setIndex((prevIndex) => (prevIndex + 1) % translations.length);
-  };
+  useEffect(() => {
+    // Hide the initial confetti after 3 seconds
+    const confettiTimer = setTimeout(() => {
+      setShowInitialConfetti(false);
+    }, 3000);
 
-  const currentTranslation = translations[index];
+    return () => clearTimeout(confettiTimer);
+  }, []);
+
+  const showNextTranslation = useCallback(() => {
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % translations.length);
+    setIsExploding(true);
+    setTimeout(() => setIsExploding(false), 2000);
+  }, []);
+
+  const currentTranslation = translations[currentIndex];
 
   const motionProps = {
     initial: { opacity: 0, scale: 0.8 },
     animate: { opacity: 1, scale: 1 },
     transition: { duration: 0.5 },
-    className: "translation"
+    className: 'translation',
   };
 
   return (
     <div className="app-container">
-      <Confetti
-        width={windowSize.width}
-        height={windowSize.height}
-        recycle={false}
-        numberOfPieces={200}
-      />
+      {showInitialConfetti && (
+        <Confetti
+          width={windowSize.width}
+          height={windowSize.height}
+          recycle={false}
+          numberOfPieces={500}
+        />
+      )}
+
+      {isExploding && (
+        <ConfettiExplosion
+          width={windowSize.width}
+          height={windowSize.height}
+          particleCount={200}
+          colors={['#FF69B4', '#8A2BE2', '#7CFC00', '#FFFF00', '#FFA500']}
+        />
+      )}
+
       <div className="content-wrapper">
         <h1>Happy Name Day, Maria!</h1>
         <p>
@@ -71,7 +96,7 @@ const App = () => {
             {currentTranslation.translation}
           </motion.span>
         </p>
-        <button onClick={nextTranslation}>Show Next</button>
+        <button onClick={showNextTranslation}>Show Next</button>
       </div>
     </div>
   );

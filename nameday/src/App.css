@@ -3,15 +3,15 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 100vw; /* Crucial for centering */
-  height: 100vh; /* Crucial for centering */
+  width: 100vw;
+  height: 100vh;
   text-align: center;
   font-family: sans-serif;
   background-color: #282c34;
   color: white;
   padding: 20px;
-  position: relative; /* For absolute positioning of confetti */
-  overflow: hidden; /* Hide confetti overflow */
+  position: relative;
+  overflow: hidden;
 }
 
 .content-wrapper {
@@ -50,4 +50,9 @@ button:hover {
 
 p {
     font-size: 1.2em;
+}
+
+
+.react-balloon-inner{
+    display: none;
 }
